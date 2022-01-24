@@ -25,7 +25,7 @@ import scipy.stats
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import VotingRegressor
 from sklearn.model_selection._split import _RepeatedSplits, \
-    BaseShuffleSplit, BaseCrossValidator
+    BaseShuffleSplit, BaseCrossValidator, TimeSeriesSplit
 from smac.runhistory.runhistory import RunInfo, RunValue
 from smac.tae import StatusType
 from smac.stats.stats import Stats
@@ -1002,7 +1002,7 @@ class AutoML(BaseEstimator):
         """
         is_split_object = isinstance(
             self._resampling_strategy,
-            (BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit)
+            (BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit, TimeSeriesSplit)
         )
 
         if self._resampling_strategy not in [
