@@ -15,7 +15,7 @@ from smac.tae import TAEAbortException, StatusType
 from sklearn.base import BaseEstimator
 from sklearn.model_selection import ShuffleSplit, StratifiedShuffleSplit, KFold, \
     StratifiedKFold, train_test_split, BaseCrossValidator, PredefinedSplit
-from sklearn.model_selection._split import _RepeatedSplits, BaseShuffleSplit
+from sklearn.model_selection._split import _RepeatedSplits, BaseShuffleSplit, TimeSeriesSplit
 
 from autosklearn.evaluation.abstract_evaluator import (
     AbstractEvaluator,
@@ -167,7 +167,8 @@ class TrainEvaluator(AbstractEvaluator):
         seed: int = 1,
         output_y_hat_optimization: bool = True,
         resampling_strategy: Optional[Union[str, BaseCrossValidator,
-                                            _RepeatedSplits, BaseShuffleSplit]] = None,
+                                            _RepeatedSplits, BaseShuffleSplit,
+                                            TimeSeriesSplit]] = None,
         resampling_strategy_args: Optional[Dict[str, Optional[Union[float, int, str]]]] = None,
         num_run: Optional[int] = None,
         budget: Optional[float] = None,
@@ -994,7 +995,7 @@ class TrainEvaluator(AbstractEvaluator):
         return train_pred, opt_pred, valid_pred, test_pred
 
     def get_splitter(self, D: AbstractDataManager) -> Union[BaseCrossValidator, _RepeatedSplits,
-                                                            BaseShuffleSplit]:
+                                                            BaseShuffleSplit, TimeSeriesSplit]:
 
         if self.resampling_strategy_args is None:
             self.resampling_strategy_args = {}
@@ -1008,7 +1009,8 @@ class TrainEvaluator(AbstractEvaluator):
 
             if isinstance(self.resampling_strategy, (BaseCrossValidator,
                                                      _RepeatedSplits,
-                                                     BaseShuffleSplit)):
+                                                     BaseShuffleSplit,
+                                                     TimeSeriesSplit)):
                 self.check_splitter_resampling_strategy(
                     X=D.data['X_train'], y=D.data['Y_train'],
                     groups=self.resampling_strategy_args.get('groups'),
@@ -1124,7 +1126,7 @@ class TrainEvaluator(AbstractEvaluator):
         task: int,
         groups: Any,
         resampling_strategy: Union[BaseCrossValidator, _RepeatedSplits,
-                                   BaseShuffleSplit],
+                                   BaseShuffleSplit, TimeSeriesSplit],
     ) -> None:
         if (
             task in CLASSIFICATION_TASKS
@@ -1153,7 +1155,8 @@ def eval_holdout(
     queue: multiprocessing.Queue,
     config: Union[int, Configuration],
     backend: Backend,
-    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit],
+    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit,
+                               TimeSeriesSplit],
     resampling_strategy_args: Dict[str, Optional[Union[float, int, str]]],
     metric: Scorer,
     seed: int,
@@ -1198,7 +1201,8 @@ def eval_iterative_holdout(
     queue: multiprocessing.Queue,
     config: Union[int, Configuration],
     backend: Backend,
-    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit],
+    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit,
+                               TimeSeriesSplit],
     resampling_strategy_args: Dict[str, Optional[Union[float, int, str]]],
     metric: Scorer,
     seed: int,
@@ -1243,7 +1247,8 @@ def eval_partial_cv(
     queue: multiprocessing.Queue,
     config: Union[int, Configuration],
     backend: Backend,
-    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit],
+    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit,
+                               TimeSeriesSplit],
     resampling_strategy_args: Dict[str, Optional[Union[float, int, str]]],
     metric: Scorer,
     seed: int,
@@ -1294,7 +1299,8 @@ def eval_partial_cv_iterative(
     queue: multiprocessing.Queue,
     config: Union[int, Configuration],
     backend: Backend,
-    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit],
+    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit,
+                               TimeSeriesSplit],
     resampling_strategy_args: Dict[str, Optional[Union[float, int, str]]],
     metric: Scorer,
     seed: int,
@@ -1340,7 +1346,8 @@ def eval_cv(
     queue: multiprocessing.Queue,
     config: Union[int, Configuration],
     backend: Backend,
-    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit],
+    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit,
+                               TimeSeriesSplit],
     resampling_strategy_args: Dict[str, Optional[Union[float, int, str]]],
     metric: Scorer,
     seed: int,
@@ -1386,7 +1393,8 @@ def eval_iterative_cv(
     queue: multiprocessing.Queue,
     config: Union[int, Configuration],
     backend: Backend,
-    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit],
+    resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit,
+                               TimeSeriesSplit],
     resampling_strategy_args: Dict[str, Optional[Union[float, int, str]]],
     metric: Scorer,
     seed: int,

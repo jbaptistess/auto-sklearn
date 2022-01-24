@@ -18,7 +18,7 @@ from smac.tae import StatusType, TAEAbortException
 from smac.tae.execute_func import AbstractTAFunc
 
 from sklearn.model_selection._split import _RepeatedSplits, BaseShuffleSplit,\
-    BaseCrossValidator
+    BaseCrossValidator, TimeSeriesSplit
 from autosklearn.metrics import Scorer
 
 import autosklearn.evaluation.train_evaluator
@@ -112,7 +112,7 @@ class ExecuteTaFuncWithQueue(AbstractTAFunc):
         self,
         backend: Backend,
         autosklearn_seed: int,
-        resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit],
+        resampling_strategy: Union[str, BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit, TimeSeriesSplit],
         metric: Scorer,
         cost_for_crash: float,
         abort_on_first_run_crash: bool,
@@ -141,7 +141,7 @@ class ExecuteTaFuncWithQueue(AbstractTAFunc):
         elif resampling_strategy == 'cv-iterative-fit':
             eval_function = autosklearn.evaluation.train_evaluator.eval_iterative_cv
         elif resampling_strategy == 'cv' or isinstance(resampling_strategy, (
-            BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit)
+            BaseCrossValidator, _RepeatedSplits, BaseShuffleSplit, TimeSeriesSplit)
         ):
             eval_function = autosklearn.evaluation.train_evaluator.eval_cv
         elif resampling_strategy == 'partial-cv':
